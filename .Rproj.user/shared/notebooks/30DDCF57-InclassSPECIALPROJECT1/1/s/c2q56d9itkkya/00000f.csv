@@ -1,0 +1,8 @@
+"0","twondyear_data_2 <- twondyear_data %>%"
+"0","  filter(signs = AstroSigns)"
+"1","[1m[33mError[39m in `filter()`:[22m
+[38;5;232m[33m![38;5;232m We detected a named input.
+[36mℹ[38;5;232m This usually means that you've used `=` instead of `==`.
+[36mℹ[38;5;232m Did you mean `signs == AstroSigns`?[39m
+[90mRun `]8;;x-r-run:rlang::last_trace()rlang::last_trace()]8;;` to see where the error occurred.[39m
+"

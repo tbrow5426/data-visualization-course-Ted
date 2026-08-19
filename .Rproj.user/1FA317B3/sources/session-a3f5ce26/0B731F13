@@ -1,0 +1,31 @@
+{
+    "id": "0B731F13",
+    "path": "~/Downloads/lab01_student-2.qmd",
+    "project_path": null,
+    "type": "quarto_markdown",
+    "hash": "2614118913",
+    "contents": "",
+    "dirty": true,
+    "created": 1786546447202.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "224,0",
+        "scrollLine": "0",
+        "rmdVisualMode": "true",
+        "rmdVisualWrapConfigured": "true",
+        "docOutlineVisible": "1",
+        "rmdVisualModeLocation": "4776:5331.111328125",
+        "rmdVisualCollapsedChunks": ""
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1786549862,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1787147705865,
+    "read_only": false,
+    "read_only_alternatives": []
+}

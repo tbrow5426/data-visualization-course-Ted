@@ -1,0 +1,6 @@
+"0","gapminder_data <- gapminder %>%"
+"0","  rename("
+"0","    life_expectancy = lifeExp,"
+"0","    population = pop,"
+"0","    gdp_per_capita = gdpPercap"
+"0","  )"

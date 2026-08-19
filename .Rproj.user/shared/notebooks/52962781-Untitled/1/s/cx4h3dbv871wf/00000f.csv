@@ -1,0 +1,8 @@
+"0","library(dplyr)"
+"0",""
+"0","country_data <- country_data %>%"
+"0","  mutate("
+"0","    Asthma_Visit_Rate = round((Visits / Population) * 100000, 1)"
+"0","  )"
+"0",""
+"0","country_data"

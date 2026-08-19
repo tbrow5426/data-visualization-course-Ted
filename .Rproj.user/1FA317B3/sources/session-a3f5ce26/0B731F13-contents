@@ -1,0 +1,530 @@
+---
+title: "Lab 1: Reproducible Data Visualization Workflow"
+subtitle: "Student Version"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-copy: true
+    code-tools: true
+execute:
+  eval: false
+  warning: false
+  message: false
+---
+
+# Lab Information
+
+**Estimated time:** 2–3 hours
+
+**Software:**
+
+- Posit/RStudio
+- R
+- Quarto
+- Git
+- GitHub
+
+# Learning Objectives
+
+By the end of this lab, you should be able to:
+
+1.  Organize a reproducible course project.
+2.  Create and verify a consistent folder structure.
+3.  Render a Quarto document.
+4.  Save and import a CSV file using relative paths.
+5.  Inspect a dataset before analysis.
+6.  Create a simple exploratory visualization.
+7.  Save a figure using `ggsave()`.
+8.  Apply the course tidy coding standards.
+9.  Commit and push project changes to GitHub.
+10. Explain why reproducibility matters in public health practice.
+
+# Before You Begin
+
+Confirm that you have:
+
+- [ ] R installed
+- [ ] Posit/RStudio installed
+- [ ] Quarto installed
+- [ ] Git installed
+- [ ] a GitHub account
+- [ ] a designated folder for this course
+- [ ] completed Chapter 0
+- [ ] reviewed Chapter 1
+
+# Lab Overview
+
+In this lab, you will create the reproducible project structure that you will use throughout the semester.
+
+Your project should eventually resemble:
+
+``` text
+data-visualization-course/
+├── data/
+├── figures/
+├── scripts/
+├── tables/
+├── assignments/
+├── labs/
+├── portfolio/
+├── README.md
+└── data-visualization-course.Rproj
+```
+
+::: callout-important
+## Work Inside an R Project
+
+Do not work from the Downloads folder or set your working directory manually. Open the course `.Rproj` file before beginning the lab.
+:::
+
+# Part 1: Create or Open the Course Project
+
+If you have not already created the course project:
+
+1.  Open Posit/RStudio.
+2.  Select **File \> New Project**.
+3.  Select **New Directory**.
+4.  Select **New Project**.
+5.  Name the project `data-visualization-course`.
+6.  Save it inside your designated course folder.
+7.  Select **Create Project**.
+
+Confirm that the project name appears in the upper-right corner of Posit/RStudio.
+
+# Part 2: Create This Lab Document
+
+Create a new Quarto document named:
+
+``` text
+lab_01_reproducible_visualization_workflow.qmd
+```
+
+Use the following YAML:
+
+``` yaml
+---
+title: "Lab 1: Reproducible Data Visualization Workflow"
+format:
+  html:
+    toc: true
+    code-copy: true
+    code-tools: true
+execute:
+  warning: false
+  message: false
+---
+```
+
+Save the file inside the `labs/` folder.
+
+Render the document before continuing.
+
+# Part 3: Load the Required Packages
+
+Load the following packages:
+
+- `tidyverse`
+- `here`
+- `fs`
+
+Add your code below.
+
+```{r}
+#| label: load-packages
+
+# Add your code here.
+```
+
+# Part 4: Confirm the Project Root
+
+Use `here()` to display the project root.
+
+```{r}
+#| label: confirm-project-root
+
+# Add your code here.
+```
+
+Answer:
+
+1.  What path was printed?
+2.  Does it point to the correct course project?
+3.  Why is working from an R Project preferable to manually setting the working directory?
+
+**Response:**
+
+# Part 5: Create the Folder Structure
+
+Create the following folders:
+
+``` text
+data
+figures
+scripts
+tables
+assignments
+labs
+portfolio
+```
+
+Use a character vector and a tidy workflow rather than repeating `dir.create()` seven times.
+
+```{r}
+#| label: create-folder-structure
+
+# Add your code here.
+```
+
+Confirm that the folders appear in the Files pane.
+
+# Part 6: Inspect the Folder Structure
+
+Use `dir_ls()` to list the top-level contents of the project.
+
+```{r}
+#| label: inspect-folder-structure
+
+# Add your code here.
+```
+
+# Part 7: Create a Simulated Public Health Dataset
+
+Create a reproducible county-level dataset with the following variables:
+
+- `county`
+- `region`
+- `adult_population`
+- `asthma_visits`
+- `vaccination_rate`
+- `asthma_visit_rate`
+
+Requirements:
+
+- Include 12 fictional counties.
+- Include three regions: North, Central, and South.
+- Use `set.seed(716)`.
+- Generate plausible values for population, visits, and vaccination coverage.
+- Calculate asthma visit rate per 100,000.
+- Round the rate to one decimal place.
+- Use tidy formatting.
+
+```{r}
+#| label: create-simulated-health-data
+
+# Add your code here.
+```
+
+Display the completed dataset.
+
+# Part 8: Save the Dataset
+
+Save the dataset as:
+
+``` text
+data/county_health_data.csv
+```
+
+Use `write_csv()` and `here()`.
+
+```{r}
+#| label: save-simulated-health-data
+
+# Add your code here.
+```
+
+Confirm that the CSV file appears inside `data/`.
+
+# Part 9: Remove and Re-Import the Dataset
+
+Remove the object from the environment.
+
+```{r}
+#| label: remove-health-data
+
+# Add your code here.
+```
+
+Then re-import the CSV file using `read_csv()` and `here()`.
+
+```{r}
+#| label: import-health-data
+
+# Add your code here.
+```
+
+# Part 10: Inspect the Data
+
+Use `glimpse()`.
+
+```{r}
+#| label: inspect-health-data
+
+# Add your code here.
+```
+
+Create a one-row summary containing:
+
+- number of counties,
+- mean vaccination rate,
+- median asthma visit rate.
+
+```{r}
+#| label: summarize-health-data
+
+# Add your code here.
+```
+
+Answer:
+
+1.  [What does one row represent?](cd ~/Documents/R git clone https://github.com/tbrow5426/data-visualization-course-Ted.git)
+2.  [How many variables are included?](cd ~/Documents/R git clone https://github.com/tbrow5426/data-visualization-course-Ted.git)
+3.  [Which variables are categorical?](cd ~/Documents/R git clone https://github.com/tbrow5426/data-visualization-course-Ted.git)
+4.  [Which variables are numeric?](cd ~/Documents/R git clone https://github.com/tbrow5426/data-visualization-course-Ted.git)
+5.  [Which variable should be used to compare asthma burden fairly across counties?](cd ~/Documents/R git clone https://github.com/tbrow5426/data-visualization-course-Ted.git)
+
+**Response:**
+
+# Part 11: Create a Ranked Vaccination Bar Chart
+
+Create a horizontal bar chart ranking counties by vaccination coverage.
+
+Requirements:
+
+- Reorder counties by vaccination rate.
+- Add a dashed reference line at 80%.
+- Use an informative title and subtitle.
+- Label the y-axis as vaccination coverage.
+- State that the values are simulated.
+- Use a readable theme.
+- Store the graph as `vaccination_plot`.
+
+```{r}
+#| label: create-vaccination-plot
+#| fig-cap: "Simulated vaccination coverage by county."
+#| fig-alt: "Horizontal bar chart ranking fictional counties by simulated vaccination coverage."
+
+# Add your code here.
+```
+
+# Part 12: Interpret the Figure
+
+Answer in two or three complete sentences.
+
+1.  What pattern does the figure show?
+2.  Which counties appear furthest below the target?
+3.  What context would be required before using this graph for a real decision?
+
+**Response:**
+
+# Part 13: Save the Vaccination Figure
+
+Save the graph as:
+
+``` text
+figures/lab01_vaccination_coverage.png
+```
+
+Use:
+
+- width of 8 inches,
+- height of 6 inches,
+- resolution of 300 dpi.
+
+```{r}
+#| label: save-vaccination-plot
+
+# Add your code here.
+```
+
+# Part 14: Independent Visualization
+
+Create one additional visualization using the same dataset.
+
+Choose one:
+
+- scatterplot of adult population and asthma visits,
+- bar chart of mean vaccination coverage by region,
+- dot plot of asthma visit rates by county,
+- or another instructor-approved graph.
+
+Requirements:
+
+- Store the graph as `independent_plot`.
+- Include an informative title and subtitle.
+- Label both axes clearly.
+- Add a caption identifying the data as simulated.
+- Use a readable theme.
+
+```{r}
+#| label: independent-visualization
+#| fig-cap: "Independent visualization created by the student."
+
+# Add your code here.
+```
+
+# Part 15: Save the Independent Figure
+
+Save the graph as:
+
+``` text
+figures/lab01_independent_visualization.png
+```
+
+Use:
+
+- width of 8 inches,
+- height of 5 inches,
+- resolution of 300 dpi.
+
+```{r}
+#| label: save-independent-visualization
+
+# Add your code here.
+```
+
+# Part 16: Tidy Coding Check
+
+Review your code and confirm:
+
+- [ ] `%>%` is used instead of the native pipe
+- [ ] one major function appears per line
+- [ ] arguments are indented consistently
+- [ ] object names are descriptive
+- [ ] no `setwd()` appears
+- [ ] no absolute file paths appear
+- [ ] code chunks have labels
+
+# Part 17: Git and GitHub
+
+Complete the following:
+
+1.  Open the Git pane.
+2.  Review the changed files.
+3.  Stage the files associated with this lab.
+4.  Commit using a meaningful message.
+5.  Push to GitHub.
+6.  Open the repository online and verify that the files appear.
+
+Suggested commit message:
+
+``` text
+Complete Lab 1 reproducible workflow
+```
+
+# Reflection Questions
+
+Answer each question in complete sentences.
+
+## Question 1
+
+Why is reproducibility important in public health research and practice?
+
+**Response:**
+
+## Question 2
+
+How does a consistent project structure improve collaboration and review?
+
+**Response:**
+
+## Question 3
+
+Why are relative paths preferable to absolute paths?
+
+**Response:**
+
+## Question 4
+
+How does GitHub contribute to reproducibility?
+
+**Response:**
+
+## Question 5
+
+What was the most challenging part of the lab?
+
+**Response:**
+
+# Deliverables
+
+Submit or push:
+
+- [ ] completed student lab QMD
+- [ ] rendered HTML file
+- [ ] `data/county_health_data.csv`
+- [ ] `figures/lab01_vaccination_coverage.png`
+- [ ] `figures/lab01_independent_visualization.png`
+- [ ] completed reflections
+- [ ] meaningful Git commit
+- [ ] updated GitHub repository
+
+# Submission Checklist
+
+Before submitting, confirm:
+
+- [ ] the project opens from the `.Rproj` file
+- [ ] the QMD renders without errors
+- [ ] all required folders exist
+- [ ] the dataset is inside `data/`
+- [ ] relative paths are used
+- [ ] both visualizations display correctly
+- [ ] both figures are saved inside `figures/`
+- [ ] reflections are complete
+- [ ] work is committed and pushed
+- [ ] no private or sensitive information was uploaded
+
+# Troubleshooting
+
+# Dataset Cannot Be Found
+
+Check:
+
+- file location,
+- spelling,
+- capitalization,
+- project root,
+- and use of `here()`.
+
+# Package Is Missing
+
+Install the package in the Console:
+
+``` r
+install.packages("package_name")
+```
+
+Do not place package-installation commands in the final lab.
+
+# Quarto Will Not Render
+
+Read the first error message and check:
+
+- commas,
+- parentheses,
+- quotation marks,
+- object names,
+- and package availability.
+
+# Git Pane Is Missing
+
+Confirm:
+
+- Git is installed,
+- the project is a Git repository,
+- and the correct project is open.
+
+# Stretch Challenge
+
+Improve one graph by adding one of the following:
+
+- direct labels,
+- a colorblind-friendly palette,
+- an annotation,
+- or a meaningful highlight.
+
+Write two sentences explaining why the change improves communication.
+
+# Looking Ahead
+
+In Lab 2, you will use the Grammar of Graphics to build and compare several visualization types for different public health questions.

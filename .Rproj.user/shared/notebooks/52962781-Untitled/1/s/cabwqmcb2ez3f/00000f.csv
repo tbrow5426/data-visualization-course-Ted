@@ -1,0 +1,8 @@
+"0","country_data <- data.frame("
+"0","  Country,"
+"0","  Population,"
+"0","  Visits,"
+"0","  Vaccination_Coverage"
+"0",")"
+"0",""
+"0","country_data"

@@ -1,0 +1,6 @@
+"0","county_summary <- county_health_data %>%"
+"0","  summarise("
+"0","    n_counties = n(),"
+"0","    mean_vaccination = mean(Vaccination_Coverage, na.rm = TRUE),"
+"0","    median_ashtma = median(Asthma_Visit_Rate, na.rm = TRUE)"
+"0","  )"

@@ -1,0 +1,145 @@
+---
+title: "Lab 1: Reproducible Data Visualization Workflow"
+format:
+  html:
+    toc: true
+    code-copy: true
+    code-tools: true
+execute:
+  warning: false
+  message: false
+---
+
+```{r}
+#install.packages("tidyverse")
+#install.packages("here")
+#install.packages("fs")
+installed.packages("tidyverse")
+```
+
+# After Installing Packages now we load packages
+
+```{r}
+library(tidyverse)
+library(here)
+library(fs)
+
+```
+
+## Questions
+
+1.  The Path printed after using the "here" function was /Users/thbrown/Documents/DataViz/DataVisualization/Data/labs.
+2.  Yes
+3.  When you work from a research project it je
+
+```{r}
+#create- folder-structure 
+directories <- c("data", "figure", "scripts", "tables", "assignments", "labs", "portfolio")
+
+fs::dir_create(directories)
+```
+
+```{r}
+# inspect folder -structure 
+
+dir_ls()
+```
+
+```{r}
+# create-simulated-health-data
+
+Country <- c("Veloria","Arkenfall","Solmara","Drevonia","Caelith","Norvessa","Eldara","Veylorn","Marinthia","Karsovia","Thaloria","Zephyria")
+
+Regions <- c("North","Central", "South")
+
+set.seed(716)
+
+```
+
+```{r}
+Population <- c(
+  5200000, 12800000, 7600000, 21400000,
+  3400000, 9800000, 6100000, 15600000,
+  4300000, 18700000, 8900000, 11200000
+)
+
+Visits <- c(
+  145000, 310000, 225000, 490000,
+  98000, 275000, 180000, 360000,
+  125000, 410000, 240000, 295000
+)
+
+Vaccination_Coverage <- c(
+  82.4, 76.8, 91.2, 68.5,
+  88.9, 73.6, 84.1, 79.7,
+  92.5, 66.9, 81.3, 87.6
+)
+
+
+```
+
+```{r}
+country_data <- data.frame(
+  Country,
+  Population,
+  Visits,
+  Vaccination_Coverage
+)
+
+country_data
+```
+
+```{r}
+library(dplyr)
+
+country_data <- country_data %>%
+  mutate(
+    Asthma_Visit_Rate = round((Visits / Population) * 100000, 1)
+  )
+
+country_data
+```
+
+```{r}
+write_csv(country_data, "county_health_data.csv")
+```
+
+
+
+
+```{r}
+
+```
+
+
+```{r}
+county_health_data <- read_csv("county_health_data.csv")
+```
+
+
+```{r}
+glimpse(county_health_data)
+```
+
+```{r}
+county_summary <- county_health_data %>%
+  summarise(
+    n_counties = n(),
+    mean_vaccination = mean(Vaccination_Coverage, na.rm = TRUE),
+    median_ashtma = median(Asthma_Visit_Rate, na.rm = TRUE)
+  )
+```
+
+
+1. What does one row represent?
+-
+
+2.How many variables are included?
+
+3.Which variables are categorical?
+
+4.Which variables are numeric?-j
+
+5.Which variable should be used to compare asthma burden fairly across counties?
+
+

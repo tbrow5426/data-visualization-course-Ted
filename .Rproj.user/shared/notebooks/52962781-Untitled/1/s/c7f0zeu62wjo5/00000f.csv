@@ -1,0 +1,4 @@
+"0","#create- folder-structure "
+"0","directories <- c(""data"", ""figure"", ""scripts"", ""tables"", ""assignments"", ""labs"", ""portfolio"")"
+"0",""
+"0","fs::dir_create(directories)"
