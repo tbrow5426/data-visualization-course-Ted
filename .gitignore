@@ -1,0 +1,11 @@
+# RStudio
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+
+# Office lock files
+~$*
+
+# OS
+.DS_Store

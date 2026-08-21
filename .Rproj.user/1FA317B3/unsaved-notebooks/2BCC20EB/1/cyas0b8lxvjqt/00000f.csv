@@ -1,8 +1,0 @@
-"0","ggplot("
-"0","  data = gapminder_2007,"
-"0","  mapping = aes("
-"0","    x = gdp_per_capita,"
-"0","    y = life_expectancy,"
-"0","    color = continent"
-"0","  )"
-"0",") + geom_point()"
