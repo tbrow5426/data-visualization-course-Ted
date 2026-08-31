@@ -10,26 +10,284 @@ execute:
   message: false
 ---
 
-## Quarto
+# Lab 1 : Reproducible Data Visualization Workflow
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+## Install Packages
 
 ```{r}
-1 + 1
+#install.packages("tidyverse")
+#install.packages("here")
+#install.packages("fs")
+#installed.packages("tidyverse")
 ```
 
-You can add options to executable code like this
+## After Installing Packages now we load packages
 
 ```{r}
-#| echo: false
-2 * 2
+library(tidyverse)
+library(fs)
+
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+## Confirm Project Root
 
-<!-- auto-sync test -->
+```{r}
+library(here)
+```
 
+## Questions
+
+1.  The Path printed after using the "here" function was /Users/thbrown/Documents/DataViz/DataVisualization/Data/labs.
+2.  Yes
+3.  When you work from a research project it just makes the ability to keep similar documents in a shared space so you can easy find reference them.  Create-folder-structure
+
+```{r}
+#create- folder-structure 
+directories <- c("data", "figure", "scripts", "tables", "assignments", "labs", "portfolio")
+
+fs::dir_create(directories)
+```
+
+## Inspect Folder-Structure
+
+```{r}
+# inspect folder -structure 
+
+dir_ls()
+```
+
+## Create Simulated Health Data
+
+```{r}
+# create-simulated-health-data
+
+County <- c("Isle of Wight", "York","James City","Southampton","Fairfax","Loudoun","Prince William","Arlington","Halifax",
+  "Buckingham", "Wise","Spotsylvania")
+
+Regions <- c("North","Central", "South")
+
+set.seed(716)
+
+```
+
+## Create Pop, Visits, and Vaccination_rate
+
+```{r}
+Population <- c(41321,71374,83326,18110,1167873,449749, 502966,243931,33447,
+  17137,34824, 155388)
+
+Visits <- c(1178,1606,1792,  580, 21022,7421,10311, 3903,1120,591,1254, 3729)
+
+Vaccination_Rate <- c(
+  78.4, 84.7, 86.1, 68.5,
+  91.6, 92.3, 88.5, 93.1,
+  69.4, 67.8, 65.9, 82.6
+)
+
+
+```
+
+## Put all data into Country_data
+
+```{r}
+county_data <- data.frame(
+  County,
+  Population,
+  Visits,
+  Vaccination_Rate
+)
+
+county_data
+```
+
+## Calculate Asthma Rate
+
+```{r}
+library(dplyr)
+
+county_data <- county_data %>%
+  mutate(
+    Asthma_Visit_Rate = round((Visits / Population) * 10000, 1)
+  )
+
+county_data
+```
+
+## Write CSV
+
+```{r}
+write_csv(county_data, "county_health_data.csv")
+```
+
+## Remove Health Data
+
+```{r}
+rm(county_data) 
+```
+
+## Read CSV
+
+```{r}
+county_health_data <- read_csv("county_health_data.csv")
+```
+
+## Look at Data to ensure if reloaded properly
+
+```{r}
+glimpse(county_health_data)
+```
+
+## Look at number of counties, mean vaccination rate, median asthma
+
+```{r}
+county_summary <- county_health_data %>%
+  summarise(
+    n_counties = n(),
+    mean_vaccination = mean(Vaccination_Rate, na.rm = TRUE),
+    median_ashtma = median(Asthma_Visit_Rate, na.rm = TRUE)
+  )
+```
+
+1.  What does one row represent?
+
+- In this specific graph, one role represents the country summary.
+
+2.How many variables are included? - There are 3 variables
+
+3.Which variables are categorical?- The variables that are considered categorical is counties.
+
+4.Which variables are numeric? - The variables that are numeric are mean vaccination and finally median asthma.
+
+5.  Which variable should be used to compare asthma burden fairly across counties?
+
+- The Variables that should be used to compare asthma burden fairly across counties is asthma vist rate because it accounts for difference is county population size.
+
+## Selecting Variables for Vaccination Rate Plot
+
+```{r}
+county_vc <- county_health_data %>%
+  select(County,Vaccination_Rate)
+```
+
+## Horizontal Bar Chart
+
+```{r}
+vaccination_plot <- ggplot(
+  county_vc,
+  aes(
+    x = reorder(County, Vaccination_Rate),   # reorder counties by rate
+    y = Vaccination_Rate
+  )
+) +
+  geom_col(fill = "steelblue") +
+  geom_hline(                                    # dashed reference line at 80%
+    yintercept = 80,
+    linetype = "dashed",
+    color = "darkred"
+  ) +
+  coord_flip() +                                 # makes the bars horizontal
+  labs(
+    title = "Vaccination Rate by County In Virginia",                          # title
+    subtitle = "Counties ranked by coverage; dashed line marks 80%",   # subtitle
+    caption = "Simulated vaccination coverage by country.",  # simulated note
+    x = "County",
+    y = "Vaccination Rate (%)"               # y-axis label
+  ) +
+  theme_minimal()                                # readable theme
+
+vaccination_plot
+```
+
+1.What pattern does the figure show? - The patterns the figure shows is in most counties to hit that special number of 80% which represents the level where herd immunity is achieved. For example during the Covid-19 pandemic the northern part of Virginia was quicker to mandate and get vaccines than the rural parts of Virginia 
+
+2.Which counties appear furthest below the target? - The counties most furthest below the target line is Wise,Southhampton, and Buckingham counties .This could be the result of rural populations with low visit rate to the clinic due to access or personal beliefs resulting in lower amount of vaccine rates, this of course makes sense as it would also be harder to mandate vaccines and makes sure those people are actual following guidelines.Where in Northern Virginia their is more governmental employees or white collar jobs who may require vaccinations.
+
+## Save Vaccination Plot
+
+```{r}
+# create the folder if it doesn't exist yet
+dir.create("figures", showWarnings = FALSE)
+
+ggsave(
+  filename = "figures/lab01_vaccination_coverage.png",
+  plot = vaccination_plot,
+  width = 8,
+  height = 6,
+  dpi = 300
+)
+```
+
+## New Variable
+
+```{r}
+asthma_rate <- county_health_data %>%
+  select(County, Asthma_Visit_Rate)
+```
+
+## Create Asthma Rate Dotplot
+
+```{r}
+asthma_dot_plot <- asthma_rate %>%
+  ggplot(
+    aes(
+      x = Asthma_Visit_Rate,
+      y = County
+    )
+  ) +
+  geom_dotplot() +
+  labs(
+    title = "Asthma-Related Visit Rates by County In Virginia",
+    subtitle = "Countries ordered from lowest to highest rate",
+    caption = "Values are simulated and do not reflect actual country data.",
+    x = "Asthma Visit Rate",
+    y = "County"
+  ) +
+  theme_minimal() 
+
+print(asthma_dot_plot)
+```
+
+## Save Asthma Dotplot
+
+```{r}
+ggsave(
+  filename = "figures/lab01_independent_visualization.png",
+  plot = asthma_dot_plot,
+  width = 8,
+  height = 6,
+  dpi = 300
+)
+```
+
+## Reflection Questions
+
+Answer each question in complete sentences.
+
+Question 1
+
+Why is reproducibility important in public health research and practice? - 
+Response: Reproducibility matters in public health research and practice because we need to be able to verify that findings are valid, and to reliably repeat programs that prove successful.
+
+Question 2
+
+How does a consistent project structure improve collaboration and review?
+
+Response: Consistent Project structure improves collaboration and review so it makes it easier to follow where you made have made mistakes or where you excelled well so you know what can do better next time.
+
+Question 3
+
+Why are relative paths preferable to absolute paths?
+
+Response: Relative paths are more preferable to absolute paths because it allows your data to be more portable in the fact it makes it easier to share your project with people you might want to collaborate with.
+
+Question 4
+
+How does GitHub contribute to reproducibility?
+
+Response: GitHub contributes to reproducibility because it keeps track of all the edits, allows other to use your information to recreate your project or just get a better understanding how you completed a project.
+
+Question 5
+
+What was the most challenging part of the lab?
+
+- The most challenging part of the lab was very technical parts such as creating an csv, saving the plots, attaching the Git, just because it was very hard to understand and I still unsure if I did it correctly.
