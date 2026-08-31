@@ -1,0 +1,211 @@
+---
+title: "Lab 2: Applying the Grammar of Graphics"
+subtitle: "Ted Brown"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-copy: true
+    code-tools: true
+execute:
+  eval: false
+  warning: false
+  message: false
+---
+
+# Learning Objectives
+
+# Setup
+
+## Load Libraries into R
+
+```{r}
+library(tidyverse)
+library(gapminder)
+```
+
+# Part 1: Prepare the Data
+
+## Rename Data
+
+```{r}
+gap_minder_data <- gapminder %>%
+  rename(
+    life_expectancy = lifeExp,
+    population = pop,
+    gdp_per_captia = gdpPercap
+  ) 
+  
+
+
+# Add your code here.
+```
+
+
+## Remove Oceania from Dataset
+```{r}
+gapminder_no_oceania <- gap_minder_data %>%
+  filter(continent != "Oceania")
+```
+
+
+## Assign Data to specific year
+
+```{r}
+gap_minder_2007 <- gapminder_no_oceania %>%
+    filter(year == 2007)
+
+```
+
+
+
+# Part 2: Scatterplot
+
+## Scatterplot
+
+```{r}
+ggplot(
+  data = gap_minder_2007,
+  mapping = aes(
+    x = gdp_per_captia,
+    y = life_expectancy,
+    color = continent
+  )
+) +
+  geom_point(size = 2, alpha = 0.8) +
+  scale_x_log10(labels = scales::comma) +
+  scale_color_viridis_d() +
+  labs(
+    title = "Life Expectancy and GDP per Capita, 2007",
+    subtitle = "Each point is one Country ; x-axis on a log scale",
+    x = "GDP per Capita (USD, log scale)",
+    y = "Life Expectancy (years)",
+    color = "Continent",
+    caption = "Source: Gapminder"
+  ) +
+  theme_minimal()
+```
+## Check Headers
+
+```{r}
+names(gap_minder_2007)
+```
+
+# Part 3: Ranked Bar Chart
+
+## Bar Chart
+
+```{r}
+continent_summary <- gap_minder_2007 %>%
+  group_by(continent) %>%
+  summarize(
+    mean_life_expectancy = mean(
+      life_expectancy,na.rm = TRUE
+    )
+  )
+
+ggplot(
+  data = continent_summary,
+  mapping = aes(
+    x = reorder(
+      continent,
+      mean_life_expectancy
+    ),
+    y = mean_life_expectancy
+  )
+) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = "Mean Life Expectancy by Continent",
+    x = NULL,
+    y = "Mean life expectancy in years",
+    caption = "Source: Gapminder"
+  ) +
+  theme_minimal()
+```
+
+# Part 4: Distribution
+
+## Box plot
+
+```{r}
+ggplot(
+  data = gap_minder_2007,
+  mapping = aes(
+    x = continent,
+    y = life_expectancy
+  )
+) +
+  geom_boxplot()
+```
+
+# Part 5: Faceting
+
+## Faceted Scatterplot
+
+```{r}
+# Faceted Scatterplot
+ggplot(
+  data = gap_minder_2007,
+  mapping = aes(
+    x = gdp_per_captia,
+    y = life_expectancy
+  )
+) +
+  geom_point(
+    alpha = 0.7
+  ) +
+  scale_x_log10() +
+  facet_wrap(
+    vars(continent)
+  )
+```
+
+# Part 6: Identify the Grammar
+
+For one graph, identify the data, aesthetics, geometry, scales, labels, facets, and theme.
+
+**Response:** In the data was gapminder_2007 , the aesthetics is x = gdp_per_captia, y = life_expectancy, geometry is geom_point, scale is log10, facets is vars(contients), and the theme is themegray().
+
+# Part 7: Independent Visualization
+
+## Horizontal bar chart
+
+```{r}
+#| label: independent-chart Looking at 
+
+asia_life <- gap_minder_2007 %>%
+  filter(continent == "Asia") %>%
+  select(country, population, gdp_per_captia, life_expectancy)
+
+asian_random <- asia_life %>%
+  filter(country %in% c("Japan", "India", "China", "Afghanistan", "Israel"))
+
+ggplot(
+  data = asian_random,
+  mapping = aes(
+    x = reorder(country, life_expectancy),
+    y = life_expectancy,
+  )
+) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = "Life Expectancy Randomly Selected by Country in Asia , During the year 2007",
+    x = "Country",
+    y = "Life expectancy (years)"
+  )
+```
+
+# Reflection
+
+1.  Which aesthetic mappings changed the meaning of the graph? -
+2.  When did faceting improve interpretation? -
+3.  Which graph most clearly communicated one finding?
+
+**Response:** 1. The aesthetic mappings that changed the meaning of the graph were the color. 2. Faceting improved the interpretation of the graph by providing an easy way to visualize the differences between countries you are comparing. 3. The graph that most clearly communicated one finding was the mean life expectancy of countries in Asia in the year 2007 you can see how with Asia having such a moderate to high life expectancy as a continent but when you look at some specific countries not all have high average life spans.
+
+# Deliverables
+
+Submit the completed QMD, rendered HTML, five visualizations, reflections, and Git commit.
