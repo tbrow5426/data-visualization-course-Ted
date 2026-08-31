@@ -1,0 +1,105 @@
+---
+title: "Class_3"
+author: "Ted Brown"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(gapminder)
+```
+
+```{r}
+glimpse(gapminder)
+```
+
+```{r}
+
+
+head(gapminder)
+
+
+
+
+summary(gapminder)
+```
+
+```{r}
+dim(gapminder)
+```
+
+```{r}
+names(gapminder)
+```
+
+```{r}
+gapminder_data <- gapminder %>%
+  rename(
+    life_expectancy = lifeExp,
+    population = pop,
+    gdp_per_captia = gdpPercap
+  )
+```
+
+```{r}
+selected_data <- gapminder_data %>%
+  select(
+    country,
+    continent,
+    year,
+    life_expectancy
+  )
+```
+
+## How to remove data with dashed sign
+
+```{r}
+reduced_data <- health_data %>%
+  select(
+    -participant_id,
+    -free_text_response
+  )
+```
+
+## How to filter Data
+
+```{r}
+gapminder_2007 <- gapminder_data %>%
+  filter( year == 2007 )
+```
+
+## How to filter by one group
+
+```{r}
+africa_2007 <- gapminder_2007 %>%
+  filter(
+    year == 2007,
+    continent == "Africa"
+  )
+```
+
+```{r}
+visualization_data <- gapminder_data %>%
+  filter(year == 2007) %>%
+  mutate(
+    population_millions = population / 1e6
+  ) %>%
+  group_by(continent) %>%
+  summarize(
+    mean_life_expectancy = mean(
+      life_expectancy,
+      na.rm = TRUE
+    ),
+    total_population_millions = sum(
+      population_millions,
+      na.rm = TRUE
+    ),
+    .groups = "drop"
+  ) %>%
+  arrange(
+    desc(mean_life_expectancy)
+  )
+
+visualization_data
+```

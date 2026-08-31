@@ -1,0 +1,98 @@
+---
+title: "CLass 4"
+author: "T"
+format: html
+editor: visual
+---
+
+```{r}
+install.packages("viridis")
+```
+
+```{r}
+library(viridis)
+library(gapminder)
+library(tidyverse)
+```
+
+```{r}
+ggplot(
+  data = gapminder %>%
+    filter(year == 2007),
+  mapping = aes(
+    x = gdpPercap,
+    y = lifeExp,
+    color = continent
+  )
+) +
+  geom_point(
+    size = 3,
+    alpha = 0.8
+  ) +
+  scale_x_log10() +
+  scale_color_viridis_d() +
+  labs(
+    title = "Life Expectancy and GDP per Capita",
+    x = "GDP per capita",
+    y = "Life expectancy in years",
+    color = "Continent"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+redesign_data <- gapminder %>%
+  filter(
+    year == 2007,
+    continent %in% c(
+      "Africa",
+      "Americas",
+      "Asia",
+      "Europe"
+    )
+  ) %>%
+  group_by(continent) %>%
+  summarize(
+    mean_life_expectancy = mean(
+      lifeExp,
+      na.rm = TRUE
+    ),
+    .groups = "drop"
+  )
+```
+
+```{r}
+ggplot(
+  data = redesign_data,
+  mapping = aes(
+    x = continent,
+    y = mean_life_expectancy,
+    fill = continent
+  )
+) +
+  geom_col() +
+  labs(
+    title = "Life Expectancy",
+    x = "Continent",
+    y = "Mean"
+  ) +
+  theme_gray()
+```
+
+```{r}
+ggplot(
+  data = redesign_data,
+  mapping = aes(
+    x = continent,
+    y = mean_life_expectancy
+  )
+) +
+  geom_col() +
+  labs(
+    title = "Average Life Expectancy of Continents",
+    x = "Continent",
+    y = "Mean Life Expectancy"
+  ) +
+  theme(
+  )
+```
