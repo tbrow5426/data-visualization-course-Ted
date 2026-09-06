@@ -1,0 +1,192 @@
+---
+title: "Lab 3: Data Wrangling for Visualization"
+subtitle: "Student Version"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-copy: true
+    code-tools: true
+execute:
+  eval: false
+  warning: false
+  message: false
+---
+
+# Learning Objectives
+
+You will clean, reshape, summarize, and join public health data before visualization.
+
+# Setup
+
+Load `tidyverse`.
+
+```{r}
+
+library(tidyverse)
+
+# Add your code here.
+```
+
+# Part 1: Create Raw Data
+
+Create `raw_health_data` with at least eight counties, region, 2023 and 2024 population and case columns, one duplicate county, and one missing value.
+
+```{r}
+library(tibble)
+
+raw_health_data <- tibble(
+  County     = c("Isle of Wight","York","James City","Southampton","Fairfax",
+                 "Loudoun","Prince William","Arlington","Halifax",
+                 "Buckingham","Wise","Spotsylvania","Fairfax"),
+  region     = c("Hampton Roads","Hampton Roads","Hampton Roads","Hampton Roads",
+                 "Northern Virginia","North Virginia","Northern Virginia",
+                 "Northern Virginia","Central","Piedmont","Central","South",
+                 "Northern Virginia"),
+  pop_2023   = c(41200, 73800, 81500, 17600, 1148000,
+                 438500, 492300, 236100, 32900,
+                 16800, 34700, 146200, 1148000),
+  pop_2024   = c(42050, 74600, 83100, 17350, 1157400,
+                 449800, 501700, 238900, 32400,
+                 16650, 34100, 149800, 1157400),
+  cases_2023 = c(312, 486, 574, 198, 8940,
+                 2810, 3960, 1520, 405,
+                 NA, 521, 1180, 8940),
+  cases_2024 = c(298, 512, 601, 215, 9375,
+                 3040, 3785, 1490, 388,
+                 224, 498, 1265, 9375)
+)
+
+
+# Add your code here.
+```
+
+
+# Part 2: Diagnose
+
+Use `glimpse()`, duplicate checks, and missing-value summaries.
+
+```{r}
+glimpse(raw_health_data)
+```
+
+# Part 3: Remove Duplicates
+
+Create `health_data_clean` with one row per county.
+
+```{r}
+
+health_data_clean <- raw_health_data %>%
+  mutate(region = if_else(region == "North Virginia", "Northern Virginia", region)) %>%
+  distinct(County, .keep_all = TRUE)
+
+```
+
+# Part 4: Reshape Long
+
+Create county, region, year, population, and cases columns.
+
+```{r}
+health_data_long <- health_data_clean %>%
+  pivot_longer(
+    cols = c(pop_2023, pop_2024, cases_2023, cases_2024),
+    names_to = c(".value", "year"),
+    names_sep = "_"
+  ) %>%
+  rename(county = County, population = pop) %>%
+  mutate(year = as.integer(year))
+```
+
+# Part 5: Calculate Rates
+
+Calculate cases per 100,000.
+
+```{r}
+health_data_long <- health_data_long %>%
+  mutate(cases_per_100k = cases / population * 100000)
+```
+
+# Part 6: Summarize
+
+Calculate mean rate by region and year.
+
+```{r}
+region_rates <- health_data_long %>%
+  group_by(region, year) %>%
+  summarise(
+    mean_rate = mean(cases_per_100k, na.rm = TRUE),
+    n_counties = n(),
+    .groups = "drop"
+  )
+```
+
+# Part 7: Join Contextual Data
+
+Create a county rural-status table and join it with `left_join()`. Check duplicates, unmatched rows, and row counts.
+
+```{r}
+county_context <- tibble(
+  county = c("Isle of Wight","York","James City","Southampton","Fairfax",
+             "Loudoun","Prince William","Arlington","Halifax",
+             "Buckingham","Wise","Spotsylvania","Accomack"),
+  rural_status = c("Rural","Suburban","Suburban","Rural","Urban",
+                   "Suburban","Suburban","Urban","Rural",
+                   "Rural","Rural","Suburban","Rural"),
+  metro_area = c("Virginia Beach-Norfolk","Virginia Beach-Norfolk",
+                 "Virginia Beach-Norfolk","Virginia Beach-Norfolk",
+                 "Washington DC","Washington DC","Washington DC",
+                 "Washington DC",NA,NA,NA,"Washington DC",NA)
+)
+health_data_joined <- health_data_long %>%
+  left_join(county_context, by = "county")
+```
+
+# Part 8: Visualize
+
+Create a regional line graph, ranked 2024 county graph, and rural-status comparison.
+
+```{r}
+region_rates <- health_data_joined %>%
+  group_by(region, year) %>%
+  summarise(mean_rate = mean(cases_per_100k, na.rm = TRUE),
+            .groups = "drop")
+
+ggplot(region_rates, aes(x = year, y = mean_rate, color = region)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2.5) +
+  scale_x_continuous(breaks = c(2023, 2024)) +
+  labs(title = "Mean case rate by region, 2023-2024",
+       x = NULL, y = "Cases per 100,000",
+       color = "Region") +
+  theme_minimal()
+```
+```{r}
+health_data_joined %>%
+  filter(year == 2024) %>%
+  ggplot(aes(x = reorder(county, cases_per_100k), y = cases_per_100k,
+             fill = rural_status)) +
+  geom_col() +
+  coord_flip() +
+  labs(title = "Case rate by county, 2024",
+       x = NULL, y = "Cases per 100,000",
+       fill = "Rural status") +
+  theme_minimal()
+```
+
+```{r}
+health_data_joined %>%
+  filter(year == 2024) %>%
+  ggplot(aes(x = rural_status, y = cases_per_100k, fill = rural_status)) +
+  geom_boxplot(alpha = 0.6, outlier.shape = NA) +
+  geom_jitter(width = 0.15, size = 2) +
+  labs(title = "Case rate by rural status, 2024",
+       x = NULL, y = "Cases per 100,000") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+# Reflection
+
+Explain why long format was useful, what causes row multiplication during joins, and why rates are preferable to counts.
+
+**Response:**  Long format is useful in ggplot because one columns identifies the grouping variable and the other one looks at the measured value. What causes row multiplication during joins happens because you have the original datasets then it adds matching information from the second datasets.Rates are preferable to counts because it allows you to get a general understanding of population size instead of looking at every specific count which can become time-consuming.
