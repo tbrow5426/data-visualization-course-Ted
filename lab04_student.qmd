@@ -1,0 +1,163 @@
+---
+title: "Lab 4: Visualization Redesign and Accessibility"
+subtitle: "Student Version"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-copy: true
+    code-tools: true
+execute:
+  eval: false
+  warning: false
+  message: false
+---
+
+# Learning Objectives
+
+You will critique, redesign, and test a visualization for accessibility.
+
+# Setup
+
+Load `tidyverse` and `gapminder`.
+
+# Part 1: Poor Graph
+
+Using 2007 Gapminder data, create a graph with at least five intentional weaknesses.
+
+```{r}
+library(tidyverse)
+library(gapminder)
+gapminder_2007 <- gapminder %>%
+  filter(year == 2007)
+```
+# Create Graph
+```{r}
+design_data <- gapminder_2007 %>%
+  filter(year == 2007) %>%
+  group_by(continent) %>%
+  summarize(
+    mean_life_expectancy = mean(
+      lifeExp,
+      na.rm = TRUE
+    ),
+    .groups = "drop"
+  )
+
+
+ggplot(
+  data = design_data,
+  mapping = aes(
+    x = continent,
+    y = mean_life_expectancy,
+    fill = continent
+  )
+) +
+  geom_col(
+    color = "black",
+    linewidth = 1
+  ) +
+  labs(
+    title = "Average Life Expectancy",
+    x = "Continent",
+    y = "Years",
+    fill = "Continent"
+  ) +
+  theme_gray() +
+  theme(
+    panel.grid.major = element_line(
+      linewidth = 1
+    ),
+    panel.border = element_rect(
+      fill = NA,
+      linewidth = 2
+    ),
+    legend.position = "right"
+  )
+```
+
+
+
+# Part 2: Critique
+
+Identify five problems and explain their effects.
+
+**Response:**  The problems with this graph is their is no year or time period so this does not give clear insight on year or if this is a current graph. The color and legends are reduant because the x- axis is already labeled.Their no sub captions and the graph outline is not needed as well.
+
+# Part 3: Redesign
+
+Create an improved graph with a finding-focused title, meaningful order, accessible design, clear labels, reduced clutter, alt text, and source.
+
+```{r}
+ggplot(
+  data = design_data,
+  mapping = aes(
+    x = continent,
+    y = mean_life_expectancy
+  )
+) +
+  geom_col(
+    linewidth = 1
+  ) +
+  labs(
+    title = "Life Expectancy Varied Substantially by Continent",
+    subtitle = "Country-level mean life expectancy in 2007",
+    x = NULL,
+    y = "Mean life expectancy in years",
+    caption = "Source: Gapminder"
+  ) +
+  
+  theme_gray() 
+
+```
+
+# Part 4: Highlighting
+
+Create a graph that highlights one continent and mutes the others.
+
+```{r}
+
+  highlight_data <- design_data %>%
+  mutate(
+    highlight_group = if_else(
+      continent == "Africa",
+      "Africa",
+      "Other countries"
+    )
+  )
+
+ggplot(
+  data = highlight_data,
+  mapping = aes(
+    x = continent,
+    y = mean_life_expectancy,
+    fill = highlight_group
+  )
+) +
+  geom_col() +
+  scale_fill_manual(
+    values = c("Africa" = "#C2410C", "Other countries" = "gray80")
+  ) +
+  labs(
+    title = "Life Expectancy Varied Substantially by Continent",
+    subtitle = "Country-level mean life expectancy in 2007",
+    x = NULL,
+    y = "Mean life expectancy in years",
+    caption = "Source: Gapminder",
+    fill = NULL
+  )
+  
+
+```
+
+# Part 5: Accessibility Review
+
+Evaluate color dependence, contrast, font size, legend use, grayscale readability, and alt text.
+
+**Response:**  The color dependence is quite noctieable, also they major contrast so I can see clearly since continent the graph wants us to draw attention to, the font size is approatrie and the legend is not really needed but still a nice touch. The grayscale readability is also pretty good.
+
+# Part 6: Published Graphic Critique
+
+Critique an instructor-approved public health graphic for purpose, data, chart choice, accessibility, uncertainty, and ethics.
+
+**Response:** I looked at Columbia Law School's Climate Change Law department, which examined COVID-19 data misrepresented by the Georgia Department of Public Health. The purpose of the graph was to show the top five counties in Georgia with the highest numbers of COVID-19 cases. The data itself is okay, but it could be organized better so it's easier to understand. The chart choice is again okay I think their a lot information for a bar chart. The biggest problem is that neither the x-axis nor the y-axis is labeled, and the bars appear to follow no logical order
